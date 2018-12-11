@@ -6,10 +6,10 @@ Installing OpenFaaS Cloud requires some initial setup with GitHub or GitLab and 
 
 * Kubernetes or Docker Swarm (Docker cannot be running with XFS as a backing file-system due to buildkit restrictions)
 * Registry account - Docker Hub account or private registry with TLS
-* OpenFaaS deployed with authentication enabled
-* Extended timeouts for the queue-worker, gateway and the backend provider
+* [OpenFaaS](https://github.com/openfaas/faas) deployed with [basic authentication](https://docs.openfaas.com/reference/authentication/) enabled
+* Extended timeouts for the queue-worker, gateway and the backend provider ?
 
-For the queue-worker, set the `ack_wait` field to `15m` to allow for a Docker build of up to 15 minutes total.
+For the queue-worker, set the `ack_wait` environment variable to `15m` to allow for a Docker build of up to 15 minutes total.
 
 ### Moving parts
 
@@ -31,7 +31,7 @@ Optionally to enable Login to the dashboard
 ### Before you begin
 
 * You must enable basic auth to prevent user-functions from accessing the admin API of the gateway
-* A list of valid users is defined in the CUSTOMERS file in this GitHub repo, this acts as an ACL, but you can define your own
+* A list of valid users is defined in the CUSTOMERS file in this GitHub repo, this acts as an ACL, but you can define your own?
 * Swarm offers no isolation between functions (they can call each other)
 * For Kubernetes isolation can be applied through [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 
@@ -61,7 +61,7 @@ The GitHub app will deliver webhooks to your OpenFaaS Cloud instance every time 
 
 * With the router configured the URL should be like: `http://system.openfaas.cloud/github-event`
 
-* If you don't have the router configured remove the `system-` prefix from `system-github-event` in `stack.yml` and set the URL like: `http://my.openfaas.cloud/functions/github-event`
+* If you don't have the router configured remove the `system-` prefix from `system-github-event` in `stack.yml` and set the URL like: `http://my.openfaas.cloud/functions/github-event` ?
 
 
 ### Create an internal trust secret
@@ -98,9 +98,9 @@ environment:
     github_app_id: "<app_id>"
 ```
 
-* Create a secret for the HMAC / webhook value:
+#### Create a secret for the HMAC / webhook value:
 
-Kubernetes:
+##### Kubernetes:
 
 ```bash
 WEBHOOK_SECRET="Long-Password-Phrase-Goes-Here"
@@ -108,7 +108,7 @@ WEBHOOK_SECRET="Long-Password-Phrase-Goes-Here"
 kubectl create secret generic -n openfaas-fn github-webhook-secret --from-literal github-webhook-secret="$WEBHOOK_SECRET"
 ```
 
-Swarm:
+##### Swarm:
 
 ```bash
 WEBHOOK_SECRET="Long-Password-Phrase-Goes-Here"
@@ -117,7 +117,7 @@ echo -n "$WEBHOOK_SECRET" | docker secret create github-webhook-secret -
 
 #### Create a secret for your GitHub App's private key
 
-Download the `.pem` file from the GitHub App page, then save it as a file named `private-key` with no extension.
+Download the `.pem` file from the GitHub App page, then save it as a file named `private-key` with no extension.?
 
 * Kubernetes
 
@@ -140,9 +140,9 @@ private_key_filename: my-private-key
 
 ### Setup your customer access control list (ACL)
 
-Edit `customers_url` in gateway_config.yml.
+Edit `customers_url` in gateway_config.yml?
 
-Enter a list of GitHub usernames for your customers, these are case-sensitive.
+Enter a list of GitHub usernames for your customers, these are case-sensitive?.
 
 ### Customize for Kubernetes or Swarm
 
@@ -158,7 +158,7 @@ You can edit `buildshiprun_limits.yml` to set the memory limit for your function
 
 ### Deploy your container builder
 
-You need to generate the ```~/.docker/config.json``` using the ```docker login``` command. 
+You need to generate the ```~/.docker/config.json``` using the ```docker login``` command. ?
 
 If you are not on Linux, i.e. you are on Mac or Windows, docker stores credentials in credentials store by default and your docker config.json file will look like this:
 ```
@@ -249,7 +249,7 @@ cat $HOME/.docker/config.json | docker secret create registry-secret -
 Create of-builder and of-buildkit:
 
 ```
-./of-builder/deploy_swarm.sh
+./of-builder/deploy_swarm.sh?
 ```
 
 ### Configure push repository and gateway URL
@@ -258,14 +258,13 @@ In gateway_config.yml
 
 ```yaml
 environment:
-  gateway_url: http://gateway.openfaas:8080/
-  gateway_public_url: http://of-cloud.public-facing-url.com:8080/
-  audit_url: http://gateway.openfaas:8080/function/audit-event
+  ...
   repository_url: docker.io/ofcommunity/
   push_repository_url: docker.io/ofcommunity/
+  ...
 ```
 
-Replace "ofcommunity" with your Docker Hub account i.e. `alexellis2/cloud/` or replace the whole string with the address of your private registry `reg.my-domain.xyz`.
+Replace "ofcommunity" with your Docker Hub account i.e. `alexellis2/cloud/` or replace the whole string with the address of your private registry `reg.my-domain.xyz`?
 
 Now set your gateway's public URL in the `gateway_public_url` field.
 
@@ -293,7 +292,7 @@ Configure your service account with a pull secret as per [OpenFaaS docs](https:/
 
 The functions will need to use basic authentication to access the gateway's administrative endpoints.
 
-Use the credentials you got when you set up OpenFaaS.
+Use the credentials you got when you set up OpenFaaS.?
 
 #### Swarm
 
